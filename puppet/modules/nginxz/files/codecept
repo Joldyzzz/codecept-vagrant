@@ -1,0 +1,51 @@
+    server {
+        listen 127.0.0.1:80;
+        server_name codecept.vagrant www.codecept.vagrant;
+        
+        rewrite '^/users/([^/]+)/([^/]+)/([^/]+)/([^\.]+\.[^\.]+\.[jpg|jpeg|gif|mp3|png|avi|vob|mpg|mpeg|mp4|ico|css|zip|tgz|gz|rar|bz2|doc|xls|exe|pdf|ppt|txt|tar|wav|bmp|rtf|js]+)$' /new/files/$2/$3/$4 break;
+        if (!-f $request_filename) {
+            rewrite '^/users/(([^/]{1,2})[^/]*)/([^\.]+\.[jpg|jpeg|gif|mp3|png|avi|vob|mpg|mpeg|mp4|ico|css|zip|tgz|gz|rar|bz2|doc|xls|exe|pdf|ppt|txt|tar|wav|bmp|rtf|js]+)$'   /users/$2/$1/$3 break;
+        }
+                
+        location ~* ^/(webstat/|awstats|webmail/|myadmin/|manimg/) {
+            proxy_pass http://codecept.vagrant:8080;
+            proxy_redirect http://codecept.vagrant:8080/ /;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+        location / {
+            proxy_pass http://codecept.vagrant:8080;
+            proxy_redirect http://codecept.vagrant:8080/ /;
+            proxy_set_header Host $host;
+            proxy_set_header X-Original-Uri  $request_uri;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Real-IP $remote_addr;
+
+            # ���������������� PRO-���������
+            set $uid "www";
+            
+            if ($host ~* "^(www\.)?(([a-z0-9_\-]+)\.codecept\.vagrant)$") {
+                    set $uid $3;
+            }
+            
+            if ($uid !~ "^(www)$") {                   
+                rewrite ^(.*)$ /kn/$uid$1 break;
+            }            
+            
+        }
+        location ~* ^.+\.(jpg|jpeg|gif|png|svg|js|css|mp3|ogg|mpe?g|avi|zip|gz|bz2?|rar|ico|swf|flv)$ {
+            rewrite '^/css(.*)/(.*)\.css$' /css/$2.css break;
+            
+            root \var\www;
+            access_log off;
+            expires max;
+            error_page 404 = @fallback;
+        }
+        location @fallback {
+            proxy_pass http://codecept.vagrant:8080;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+    }
