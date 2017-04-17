@@ -1,0 +1,24 @@
+/.buildpath
+/.idea
+/.metadata
+/.project
+/Tools
+/backup
+/ban_images
+/cities.php
+/cities.txt
+/ip_compact.txt
+/listings
+/reviews
+/tasks1_Log.csv
+/temp
+/userfiles
+/users
+/xml
+/storage
+/angry-curl
+scripts/sxd/backup/*
+*.lock
+
+# vagrant
+.vagrant
