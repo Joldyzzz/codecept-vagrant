@@ -3,12 +3,12 @@ IndexIgnore */*
 RewriteEngine on
 
 RewriteCond %{REQUEST_URI} !^/(web)
-RewriteRule ^assets/(.*)$ /web/assets/$1 [L]
-RewriteRule ^css/(.*)$ web/css/$1 [L]
-RewriteRule ^js/(.*)$ web/js/$1 [L]
-RewriteRule ^images/(.*)$ web/images/$1 [L]
-RewriteRule (.*) /web/$1
+RewriteRule ^assets/(.*)$ /yii2/web/assets/$1 [L]
+RewriteRule ^css/(.*)$ yii2/web/css/$1 [L]
+RewriteRule ^js/(.*)$ yii2/web/js/$1 [L]
+RewriteRule ^images/(.*)$ yii2/web/images/$1 [L]
+RewriteRule (.*) /yii2/web/$1
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /web/index.php
+RewriteRule . /yii2/web/index.php
