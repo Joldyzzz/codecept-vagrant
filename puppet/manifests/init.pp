@@ -36,4 +36,4 @@ apache::vhost { 'vhost.example.com':
 #  ensure => 'directory',
 #}
 
-include php, apache, composer
+include php, apache, nginxz, composer
