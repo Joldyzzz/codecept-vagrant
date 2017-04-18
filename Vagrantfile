@@ -14,9 +14,9 @@ Vagrant.configure("2") do |config|
   config.vm.box = "debian/jessie64"
   config.vm.box_version = "8.2.1"
   config.vm.box_check_update = false
-  config.vm.network :forwarded_port, host: 2222, guest: 22, host_ip: "127.0.0.1", id: 'ssh'
-  config.vm.network :forwarded_port, host: 5555, guest: 80, host_ip: "127.0.0.1", id: 'tcp5555'
-  config.vm.network :forwarded_port, host: 55555, guest: 55555, host_ip: "127.0.0.1", id: 'tcp55555'
+  config.vm.network :forwarded_port, host: 2223, guest: 22, host_ip: "127.0.0.1", id: 'ssh'
+  config.vm.network :forwarded_port, host: 5556, guest: 80, host_ip: "127.0.0.1", id: 'tcp5555'
+  config.vm.network :forwarded_port, host: 55556, guest: 55555, host_ip: "127.0.0.1", id: 'tcp55555'
 
   config.vm.network :private_network, ip: "55.55.55.10"
 
