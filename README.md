@@ -13,3 +13,6 @@ composer install
 composer global require "codeception/codeception=\*"
 composer global require "codeception/specify=\*"
 composer global require "codeception/verify=\*"
+
+# Шаг №5
+sudo ln -s ~/.composer/vendor/bin/codecept    /usr/local/bin/codecept
