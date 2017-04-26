@@ -1,16 +1,16 @@
 <?php
 class ContactFormCest 
 {
-    public function _before(\FunctionalTester $I)
-    {
-        $I->amOnPage(['site/contact']);
-    }
-
-    public function openContactPage(\FunctionalTester $I)
-    {
-        $I->see('Contact', 'h1');        
-    }
-
+//    public function _before(\FunctionalTester $I)
+//    {
+//        $I->amOnPage(['site/contact']);
+//    }
+//
+//    public function openContactPage(\FunctionalTester $I)
+//    {
+//        $I->see('Contact', 'h1');
+//    }
+//
 //    public function submitEmptyForm(\FunctionalTester $I)
 //    {
 //        $I->submitForm('#contact-form', []);
