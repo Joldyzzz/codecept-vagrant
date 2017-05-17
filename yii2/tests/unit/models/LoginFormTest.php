@@ -17,7 +17,7 @@ class LoginFormTest extends \Codeception\Test\Unit
     public function testLoginNoUser()
     {
         $this->model = new LoginForm([
-            'username' => 'not_existing_username',
+            'email' => 'not_existing_email',
             'password' => 'not_existing_password',
         ]);
 
