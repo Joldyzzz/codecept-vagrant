@@ -23,3 +23,8 @@ composer global require "codeception/verify=\*"
 
 # Шаг №5
 sudo ln -s ~/.composer/vendor/bin/codecept    /usr/local/bin/codecept
+
+# Чтобы потом не искать
+Устанавливаем JAVA для запуска Selenium:
+
+apt-get install default-jdk

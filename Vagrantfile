@@ -17,6 +17,7 @@ Vagrant.configure("2") do |config|
   config.vm.network :forwarded_port, host: 2223, guest: 22, host_ip: "127.0.0.1", id: 'ssh'
   config.vm.network :forwarded_port, host: 5556, guest: 80, host_ip: "127.0.0.1", id: 'tcp5555'
   config.vm.network :forwarded_port, host: 55556, guest: 55555, host_ip: "127.0.0.1", id: 'tcp55555'
+  config.vm.network :forwarded_port, host: 4444, guest: 4444, host_ip: "127.0.0.1", id: 'tcp4444'
 
   config.vm.network :private_network, ip: "55.55.55.10"
 
@@ -45,8 +46,8 @@ Vagrant.configure("2") do |config|
       s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
   end
 
+  config.vm.provision "shell", path: "provisioner.sh"
   config.vm.provision "shell", path: "puppet/debian.sh"
-
 
       config.vm.provision :puppet do |puppet|
         puppet.manifests_path = "puppet/manifests"
