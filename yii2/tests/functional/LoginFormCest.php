@@ -3,7 +3,8 @@ class LoginFormCest
 {
     public function _before(\FunctionalTester $I)
     {
-        $I->amOnRoute('site/login');
+//        $I->amOnRoute('site/login');
+        $I->amOnPage('/yii2/web/index.php?r=site%2Flogin');
     }
 
     public function openLoginPage(\FunctionalTester $I)

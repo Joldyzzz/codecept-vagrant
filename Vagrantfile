@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.network :private_network, ip: "55.55.55.10"
 
-  config.vm.synced_folder ".", "/vagrant", :mount_options => ["dmode=777","fmode=666"]
+#  config.vm.synced_folder ".", "/vagrant", :mount_options => ["dmode=777","fmode=666"]
 
 #  config.vm.provider :virtualbox do |vb|
 #      vb.gui = true
@@ -46,7 +46,7 @@ Vagrant.configure("2") do |config|
       s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
   end
 
-  config.vm.provision "shell", path: "provisioner.sh"
+#  config.vm.provision "shell", path: "provisioner.sh"
   config.vm.provision "shell", path: "puppet/debian.sh"
 
       config.vm.provision :puppet do |puppet|

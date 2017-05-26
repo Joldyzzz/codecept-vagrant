@@ -28,3 +28,5 @@ sudo ln -s ~/.composer/vendor/bin/codecept    /usr/local/bin/codecept
 Устанавливаем JAVA для запуска Selenium:
 
 apt-get install default-jdk
+
+https://tecadmin.net/install-java-8-on-debian/
