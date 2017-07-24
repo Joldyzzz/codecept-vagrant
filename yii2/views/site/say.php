@@ -7,5 +7,14 @@
  */
 
 use yii\helpers\Html;
+
+$this->title = 'Say';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<?= Html::encode($message) ?>
+<div class="site-say">
+    <h1><?= Html::encode($message) ?></h1>
+
+    <p>
+        This is the My Test page
+    </p>
+</div>
