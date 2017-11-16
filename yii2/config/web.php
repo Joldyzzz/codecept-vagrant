@@ -44,7 +44,7 @@ $config = [
             'showScriptName'  => false,
 //            'enableStrictParsing' => true,
             'rules' => [
-
+                '<action:(.*)>' => 'site/<action>'
             ],
         ],
     ],

@@ -19,6 +19,10 @@ return [
         ],
         'urlManager' => [
             'showScriptName'  => true,
+            'enablePrettyUrl' => false,
+            'rules' => [
+                '<action:(.*)>' => 'site/<action>'
+            ],
         ],
         'user' => [
             'identityClass' => 'app\models\Users',
