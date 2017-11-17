@@ -18,8 +18,8 @@ return [
             'basePath' => __DIR__ . '/../web/assets',
         ],
         'urlManager' => [
-            'showScriptName'  => true,
             'enablePrettyUrl' => false,
+            'showScriptName'  => false,
             'rules' => [
                 '<action:(.*)>' => 'site/<action>'
             ],
