@@ -8,7 +8,9 @@ php:
   - 5.4
 
 before_install:
+  - COMPOSER_ROOT_VERSION=dev-master composer install
   - cd yii2
+
 install:
   - composer self-update
   - composer install
