@@ -11,4 +11,4 @@ install:
   - composer self-update
   - composer install
 
-script: php vendor/codeception/codeception/codecept run
+script: php yii2/vendor/codeception/codeception/codecept run
