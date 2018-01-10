@@ -1,29 +1,55 @@
-language: php
-php:
-    - "7.0"
-    - "5.6"
-    - "5.5"
-    - "5.4"
-#    - "nightly"
-
 sudo: false
 
+language: php
+
+matrix:
+  include:
+    - php: 5.4
+    - php: 5.5
+    - php: 5.6
+    - php: 7.0
+
+addons:
+  postgresql: "9.2"
+
+branches:
+  except:
+    - gh-pages
+
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
+
+services:
+  - mongodb
+  - rabbitmq
+  - postgresql
+  - redis
+
 install:
-  - travis_retry composer self-update && composer --version
-  # We have to supply the branch alias here again as travis checks out a commit hash and therefore destroys the
-  # circular dependency phpcq/all-tasks -> phpcq/autoload-validation -> phpcq/all-tasks.
-  - >
-    if [ "x${TRAVIS_TAG}" != "x" ]; then
-      COMPOSER_ROOT_VERSION=${TRAVIS_TAG} travis_retry composer update --prefer-dist --no-interaction;
-    else
-      COMPOSER_ROOT_VERSION=dev-${TRAVIS_BRANCH} travis_retry composer update --prefer-dist --no-interaction;
-    fi
-script: ant -keep-going
+  - '[[ "$TRAVIS_PHP_VERSION" == "5.4" ]] || pecl install -f mongodb'
+  - yes '' | pecl install imagick
+  #- echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - composer self-update && composer --version
+  - if [ -n "$CI_USER_TOKEN" ]; then composer config github-oauth.github.com ${CI_USER_TOKEN}; echo "Configured Github token"; fi;
+  - '[[ "$TRAVIS_PHP_VERSION" == "5.4" ]] || composer require mongodb/mongodb --no-update'
+  - '[[ "$TRAVIS_PHP_VERSION" == "7.2" ]] || composer global require "fxp/composer-asset-plugin:~1.1.1"'
+  - '[[ -z "$SYMFONY" ]] || composer require symfony/finder=~$SYMFONY --no-update --ignore-platform-reqs'
+  - '[[ -z "$SYMFONY" ]] || composer require symfony/yaml=~$SYMFONY --no-update --ignore-platform-reqs'
+  - '[[ -z "$SYMFONY" ]] || composer require symfony/console=~$SYMFONY --no-update --ignore-platform-reqs'
+  - '[[ -z "$SYMFONY" ]] || composer require symfony/event-dispatcher=~$SYMFONY --no-update --ignore-platform-reqs'
+  - '[[ -z "$SYMFONY" ]] || composer require symfony/css-selector=~$SYMFONY --no-update --ignore-platform-reqs'
+  - '[[ -z "$SYMFONY" ]] || composer require symfony/dom-crawler=~$SYMFONY --no-update --ignore-platform-reqs'
+  - '[[ -z "$SYMFONY" ]] || composer require symfony/browser-kit=~$SYMFONY --no-update --ignore-platform-reqs'
+  - composer_parameters="-n --prefer-dist" # this variable will be used in all composer install commands
+  - '[[ "$dependencies" != "lowest" ]] || composer_parameters="$composer_parameters --prefer-lowest"'
+  - composer update $composer_parameters
+  - composer_parameters="$composer_parameters --no-dev" # Codeception needs dev dependencies, but frameworks don't
+  # Yii2
+  - '[[ "$TRAVIS_PHP_VERSION" == "7.2" ]] || composer create-project "yiisoft/yii2-app-basic" frameworks-yii-basic --no-dev'
 
-allow_failure:
-    - php: "7.0"
-    - php: "nightly"
-
-# Hack to make things work again - we can not use a shallow repository.
-git:
-  depth: 2147483647
+script:
+  - php codecept run cli,unit # self tests
+  - '[[ "$TRAVIS_PHP_VERSION" == "7.0" ]] || php codecept run coverage'  # run coverage tests on php only
+  - '[[ "$TRAVIS_PHP_VERSION" == "7.2" ]] || php codecept run functional -c frameworks-yii-basic' # Yii2 tests
