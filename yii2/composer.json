@@ -34,7 +34,8 @@
     "scripts": {
         "post-create-project-cmd": [
             "yii\\composer\\Installer::postCreateProject"
-        ]
+        ],
+        "test": "./vendor/bin/codecept run --no-interaction"
     },
     "extra": {
         "yii\\composer\\Installer::postCreateProject": {

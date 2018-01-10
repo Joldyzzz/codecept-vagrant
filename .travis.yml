@@ -1,55 +1,83 @@
-sudo: false
+# Config file for https://travis-ci.org/
+# Validate this file here - http://lint.travis-ci.org/
 
+# Tell Travis CI we are using PHP
 language: php
 
+# The platforms you wants to test on
+dist: trusty
+os:
+  - linux
+
+# Install google chrome latest stable
+addons:
+  apt:
+    packages:
+      - google-chrome-stable
+
+# git configs
+git:
+  depth: 1
+
+# Define the php versions against we want to test our code
+php:
+    - 5.6
+    - 7.0
+
 matrix:
-  include:
-    - php: 5.4
-    - php: 5.5
-    - php: 5.6
+  fast_finish: true
+  allow_failures:
     - php: 7.0
 
-addons:
-  postgresql: "9.2"
 
-branches:
-  except:
-    - gh-pages
+# We don't want to run linux commands as super user
+# false means Travis will run this in a container
+sudo: false
 
-cache:
-  directories:
-    - vendor
-    - $HOME/.composer/cache
+# Disable x-debug to speed up things
+before_install: phpenv config-rm xdebug.ini
 
-services:
-  - mongodb
-  - rabbitmq
-  - postgresql
-  - redis
-
+# Install packages those will be required during build
 install:
-  - '[[ "$TRAVIS_PHP_VERSION" == "5.4" ]] || pecl install -f mongodb'
-  - yes '' | pecl install imagick
-  #- echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - composer self-update && composer --version
-  - if [ -n "$CI_USER_TOKEN" ]; then composer config github-oauth.github.com ${CI_USER_TOKEN}; echo "Configured Github token"; fi;
-  - '[[ "$TRAVIS_PHP_VERSION" == "5.4" ]] || composer require mongodb/mongodb --no-update'
-  - '[[ "$TRAVIS_PHP_VERSION" == "7.2" ]] || composer global require "fxp/composer-asset-plugin:~1.1.1"'
-  - '[[ -z "$SYMFONY" ]] || composer require symfony/finder=~$SYMFONY --no-update --ignore-platform-reqs'
-  - '[[ -z "$SYMFONY" ]] || composer require symfony/yaml=~$SYMFONY --no-update --ignore-platform-reqs'
-  - '[[ -z "$SYMFONY" ]] || composer require symfony/console=~$SYMFONY --no-update --ignore-platform-reqs'
-  - '[[ -z "$SYMFONY" ]] || composer require symfony/event-dispatcher=~$SYMFONY --no-update --ignore-platform-reqs'
-  - '[[ -z "$SYMFONY" ]] || composer require symfony/css-selector=~$SYMFONY --no-update --ignore-platform-reqs'
-  - '[[ -z "$SYMFONY" ]] || composer require symfony/dom-crawler=~$SYMFONY --no-update --ignore-platform-reqs'
-  - '[[ -z "$SYMFONY" ]] || composer require symfony/browser-kit=~$SYMFONY --no-update --ignore-platform-reqs'
-  - composer_parameters="-n --prefer-dist" # this variable will be used in all composer install commands
-  - '[[ "$dependencies" != "lowest" ]] || composer_parameters="$composer_parameters --prefer-lowest"'
-  - composer update $composer_parameters
-  - composer_parameters="$composer_parameters --no-dev" # Codeception needs dev dependencies, but frameworks don't
-  # Yii2
-  - '[[ "$TRAVIS_PHP_VERSION" == "7.2" ]] || composer create-project "yiisoft/yii2-app-basic" frameworks-yii-basic --no-dev'
+  - composer install --no-interaction
 
+# Prepare test environment
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+
+  - echo "Download selenium-server-standalone jar file"
+  - wget -c -nc --retry-connrefused --tries=0 https://goo.gl/s4o9Vx -O selenium-server-standalone.jar
+
+  - echo "Download chrome driver and unzip it"
+  - wget -c -nc --retry-connrefused --tries=0 http://chromedriver.storage.googleapis.com/2.31/chromedriver_linux64.zip
+  - unzip -o -q chromedriver_linux64.zip
+
+  - echo "Run selenium server - background process"
+  - nohup bash -c "java -jar selenium-server-standalone.jar &" && sleep 1; cat nohup.out
+  - ls -al
+
+  - echo "Run php in-built server - background process"
+  - nohup bash -c "php -S localhost:8000 2>&1 -t app &" && sleep 1; cat nohup.out
+
+# Run main commands
 script:
-  - php codecept run cli,unit # self tests
-  - '[[ "$TRAVIS_PHP_VERSION" == "7.0" ]] || php codecept run coverage'  # run coverage tests on php only
-  - '[[ "$TRAVIS_PHP_VERSION" == "7.2" ]] || php codecept run functional -c frameworks-yii-basic' # Yii2 tests
+  - composer test
+
+#after_script:
+
+#after_success:
+
+#after_failure:
+
+
+# Tell Travis CI to monitor only 'master' branch
+branches:
+  only: master
+
+# Cache folder, you can delete cache from Travis CI web interface
+cache:
+    directories:
+        - vendor
+        - $HOME/.composer/cache
