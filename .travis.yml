@@ -7,28 +7,8 @@ php:
   - 5.5
   - 5.4
 
-# environment variable used in test suite
-env: TEST_ENVIRONMENT=travis
-
-# faster builds on new travis setup not using sudo
-sudo: false
-
-# cache vendor dirs
-cache:
-  directories:
-    - vendor
-    - $HOME/.composer/cache
-
-# install dependencies
 install:
-  - travis_retry composer self-update
-  - travis_retry composer global require "fxp/composer-asset-plugin:~1.1.1"
-  - travis_retry composer global require "codeception/codeception:*"
-  - travis_retry composer install --prefer-dist
+  - composer self-update
+  - composer install
 
-    before_script:
-  - cd yii2/tests
-  - ~/.composer/vendor/bin/codecept build
-  - cd ../
-
-script: ~/.composer/vendor/bin/codecept run
+script: php yii2/vendor/codeception/codeception/codecept run
