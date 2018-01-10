@@ -7,6 +7,8 @@ php:
   - 5.5
   - 5.4
 
+before_install:
+  - cd yii2
 install:
   - composer self-update
   - composer install
