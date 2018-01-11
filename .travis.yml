@@ -1,14 +1,9 @@
-sudo: required
-group: edge
+sudo: false
 
 language: php
 
 php:
   - 7.0
-
-env:
-  global:
-    - DEFAULT_COMPOSER_FLAGS="--prefer-dist --no-interaction --no-progress --optimize-autoloader"
 
 services:
   - memcached
@@ -24,9 +19,9 @@ before_install:
   - cd yii2
 
 install:
-  - travis_retry composer self-update
+  - travis_retry composer self-update && composer --version
   - travis_retry composer global require --prefer-source fxp/composer-asset-plugin:~1.1.1
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - travis_retry composer install $DEFAULT_COMPOSER_FLAGS
+  - travis_retry composer install --dev --prefer-dist --no-interaction
 
 script: php yii2/vendor/codeception/codeception/codecept run
