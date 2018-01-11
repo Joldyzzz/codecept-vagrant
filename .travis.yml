@@ -12,6 +12,7 @@ before_install:
 
 install:
   - composer self-update
+  - composer global require --prefer-source fxp/composer-asset-plugin:~1.1.1
   - composer install
 
 script: php yii2/vendor/codeception/codeception/codecept run
