@@ -19,6 +19,7 @@ before_install:
 
 install:
   - travis_retry composer self-update && composer --version
+  - travis_retry composer config --global github-oauth.github.com "066ae3093b5ccb1db982118b7090579a9f69ac32"
   - travis_retry composer global require --prefer-source fxp/composer-asset-plugin:~1.1.1
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - travis_retry composer install --prefer-dist --no-interaction
