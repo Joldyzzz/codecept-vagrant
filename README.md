@@ -1,7 +1,5 @@
 # My project's README
 
-[![Build Status](https://travis-ci.org/joldyzzz/codecept-vagrant.svg?branch=master)](https://travis-ci.org/joldyzzz/codecept-vagrant)
-
 # Требования
 Vagrant https://www.vagrantup.com
 
