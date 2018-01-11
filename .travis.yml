@@ -1,4 +1,4 @@
-sudo: false
+sudo: true
 
 language: php
 
@@ -11,17 +11,20 @@ services:
 # cache vendor dirs
 cache:
   directories:
-    - vendor
     - $HOME/.composer/cache
-    - $HOME/.npm
 
 before_install:
   - cd yii2
 
 install:
   - travis_retry composer self-update && composer --version
-  - travis_retry composer global require --prefer-source fxp/composer-asset-plugin:~1.1.1
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - travis_retry composer install --dev --prefer-dist --no-interaction
+  - travis_retry composer install --prefer-dist --no-interaction
+
+#install:
+#  - travis_retry composer self-update && composer --version
+#  - travis_retry composer global require --prefer-source fxp/composer-asset-plugin:~1.1.1
+#  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+#  - travis_retry composer install --dev --prefer-dist --no-interaction
 
 script: php yii2/vendor/codeception/codeception/codecept run
